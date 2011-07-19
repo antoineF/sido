@@ -49,6 +49,7 @@ Use
 ---
 
 How to track download :
+
 - Add sido.js : 
 
     <script type="text/javascript" src="js/sido.js"></script>
@@ -56,8 +57,8 @@ How to track download :
 - Put onclick method on your download link like that : 
 
     <a href="./flot-0.7.zip" onclick="javascript:track('project_one','nightly')">test</a>
-
 How to add an event programmatly :
+
 - Add sido.js : 
 
     <script type="text/javascript" src="js/sido.js"></script>
