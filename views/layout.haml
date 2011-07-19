@@ -1,0 +1,37 @@
+!!!          
+%html
+  %head
+    %script{ :src => "/js/flot/jquery.js", :type => "text/javascript" }
+    %script{ :src => "/js/flot/jquery.flot.js", :type => "text/javascript" }
+    %script{ :src => "/js/tipsy/javascripts/jquery.tipsy.js", :type => "text/javascript" }
+    %script{ :src => "/js/tablesorter/jquery.tablesorter.min.js", :type => "text/javascript" }
+    %script{ :src => "/js/jquerydate/date.js", :type => "text/javascript" }
+    %script{ :src => "js/jquerydate/jquery.datePicker.js", :type => "text/javascript" }
+    %link{ :rel => "stylesheet", :href => "/css/datePicker.css", :media => "screen", :type => "text/css"}
+    %script{ :src => "/js/sido/eventdialogform.js", :type => "text/javascript" }
+    
+    %link{ :rel => "stylesheet", :href => "/css/styles.css", :media => "screen", :type => "text/css"}
+    %link{ :rel => "stylesheet", :href => "/css/eventdialogform.css", :media => "screen", :type => "text/css"}
+    
+    %title Sido - Simple Download Tracker
+  %body
+    .site
+      .title
+        %a{ :href => "/" }Sido
+        %span{ :class => "extra" } Simple Download Tracker
+      %div{ :id => "home"}= yield
+    
+      .footer
+        .contact
+          %p
+            It's
+            %a{ :href => "http://github.com/antoineF/sido"} Sido.
+            It's used
+            %a{ :href => "http://sinatrarb.com"} Sinatra,
+            %a{ :href => "http://sequel.rubyforge.org"} Sequel,
+            %a{ :href => "http://haml-lang.com"} Haml,
+            %a{ :href => "https://github.com/jaz303/tipsy"} Tipsy,
+            %a{ :href => "http://tablesorter.com"} tableshorter 
+            and
+            %a{ :href => "http://code.google.com/p/flot/"} Flot.
+            

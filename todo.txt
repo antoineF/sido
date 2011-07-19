@@ -1,0 +1,11 @@
+# Obligatoire
+-> Ajouter les événements sur les graphes. (OK)
+-> Ajouter le nombre de téléchargement par projet (en base et sous le graphisme). (En cours)
+-> Ajouter la période temporelle sur le graphisme. (OK)
+-> exemple en js
+-> redirection des get -> post OK
+-> Ajouter un formulaire sur la page des projets pour les événements. OK
+
+#Bonus
+-> Ajouter le nombre de téléchargement dans le titre.
+-> Auto rafraîchissement du nombre de téléchargement, des graphes...

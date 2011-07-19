@@ -1,0 +1,182 @@
+
+%h1
+  %a{ :href => "/#{@project[:name]}" }= @project[:name] 
+  %a{:class => "right", :href => "javascript:popup('')"} + add an envent
+  
+%ul{:class => "projects"}
+  %li
+    last download at 
+    %span{ :class => "date"}= @project.date 
+    %br
+    total number of downloads 
+    %span{ :class => "date"}= @project.downloads_count
+
+%strong{ :class => "legend"}
+  \# of downloads by day of
+  = @project[:name]
+  \ from 
+  = @completedownload[0].first[0]
+  to
+  = @completedownload[0].last[0]
+
+<div id="placeholder" style="width:100%;height:300px"></div>
+  
+:javascript
+    $(function () {
+    // generate a dataset
+    var data = [];
+    #{js = ""
+    i = 0
+    @versions.each do |version|
+      js << "var d = new Array;\n"
+      count_total = 0;
+      @completedownload[i].each do |download|
+        date = date_to_time(download[0]).to_i*1000; count = download[1]; js << "d.push([#{date}, #{count}]);\n";
+        count_total += count
+      end
+      if version != ""
+        js << "data.push({ data: d, label: \"#{version}\", nbofdownload: #{@total_counts[i]}});\n";
+      else
+        js << "data.push({ data: d, label: \"no_name\", nbofdownload: #{@total_counts[i]}});\n";
+      end
+      i += 1
+    end
+    js}
+    
+    var placeholder = $("#placeholder");
+    
+    var markings = [];
+    //event
+    #{js = ""
+    @events.each do |event|
+      date = date_to_time(event.date).to_i*1000; 
+      js << "markings.push({ color: '#555', lineWidth: 2, xaxis: { from: #{date}, to: #{date} }});\n";
+    end
+    js}
+    
+    //plot
+    var plot = $.plot(placeholder, data, {
+                series: {
+                   lines: { show: true, fill: true },
+                   points: { show: true, fill: false }
+               },
+               colors: [ "#CC3E18", "#424242", "#3299BB", "#BCBCBC"],
+                yaxis: { min: -2, tickDecimals: 0},
+                xaxis: { mode: "time", timeformat: "%0m/%0d", minTickSize: [1, "day"] },
+                legend: {
+                  position: "nw", backgroundOpacity: 0,  
+                  labelFormatter: function(label, series) {
+                    var nbdownload = series.nbofdownload;
+                    if (nbdownload == 0) nbdownload = "no";
+                    var down = "";
+                    if (series.nbofdownload > 1) down = "s";
+                    return label + " - " + nbdownload + " download" + down;
+                  }},
+                  grid: { markings: markings, hoverable: true, clickable: true }
+                });
+    function showTooltip(x, y, contents) {
+        $('<div id="tooltip">' + contents + '</div>').css( {
+            position: 'absolute',
+            display: 'none',
+            top: y - 10,
+            left: x + 15,
+            border: '1px solid #424242',
+            padding: '2px',
+            'background-color': '#aaa',
+            opacity: 0.7
+        }).appendTo("body").fadeIn(200);
+    }
+
+    var previousPoint = null;
+    $("#placeholder").bind("plothover", function (event, pos, item) {
+        $("#x").text(pos.x.toFixed(2));
+        $("#y").text(pos.y.toFixed(2));
+
+        if (item) {
+          if (previousPoint != item.dataIndex) {
+            previousPoint = item.dataIndex;
+                    
+            $("#tooltip").remove();
+              var x = item.datapoint[0].toFixed(2),
+              y = item.datapoint[1].toFixed(2);
+              var d = new Date(parseInt(x));
+              var nbdownload = parseInt(y);
+              if (nbdownload == 0) nbdownload = "no";
+              var down = "";
+              if (y > 1) down = "s";
+              showTooltip(item.pageX, item.pageY,
+                                nbdownload + " download" + down + " for " + item.series.label + " on " + d.getMonth() + "/" + d.getDate() + "/" + d.getFullYear());
+          }
+        }
+        else {
+            $("#tooltip").remove();
+            previousPoint = null;            
+        }
+    });
+    
+    // add labels
+    #{js = ""
+    count = 0;
+    @events.each do |event|
+      date = date_to_time(event.date).to_i*1000; 
+      js << "var o = plot.pointOffset({ x: #{date}, y: -0.5});\n"
+      js << "placeholder.append('<div style=\"position:absolute;left:' + (o.left + 4) + 'px;top:' + o.top + 'px;\" class=\"eventbox\"><a class=\"event\" href=\"#\" title=\"#{event.name}\">#{count+1}.</a></div>');\n"
+      count += 1;
+    end
+    js}
+    
+    $('a.event').tipsy({live: true, gravity: 'w', opacity: 1, fade: true});
+    
+  });
+  $(document).ready(function() { 
+    // call the tablesorter plugin 
+    $("table").tablesorter({ 
+        // sort on the first column and third column, order asc 
+        sortList: [[0,0]] 
+    }); 
+  });
+
+%br
+
+%table{ :id => "project_table", :class => "tablesorter {sortlist: [[0,0]]}"}
+  %thead
+    %tr
+      %th Date
+      - @versions.each do |version|
+        %th 
+          - if version != ""
+            = version
+          - else
+            no_name
+  %tbody
+    - i = 1
+    - version_count = @versions.count
+    - while i < @completedownload[0].count
+      %tr{ :class => "odd" }
+        %th 
+          = @completedownload[0][i][0]
+        - for j in 0..(version_count-1)
+          %td 
+            = @completedownload[j][i][1]
+      - i +=1
+  %tfoot
+    %tr
+      %th Sum
+      - for j in 0..(version_count-1)
+        %td 
+          = @total_counts[j]
+
+#dialog-overlay
+#dialog-box
+  .dialog-content
+    %h1 Add an event
+    %form{ :method => 'post', :action => "#{@project[:name]}/event", :onsubmit => "return validform(this)"}
+      %p Name :
+      %input{ :type => "text", :name => "name"}
+      %i ex: launch of beta-test compaign
+      %p Date :
+      %input{ :type => "text", :name => "date", :class => "date-pick"}
+      %input{ :type => "hidden", :name => "redirect", :value => 'true'}
+      .button
+        %input{ :type => "reset", :value => "Cancel", :class => "btn-cancel", :onClick => "$('#dialog-overlay, #dialog-box').hide();this.form.reset();"}
+        %input{ :type => "submit", :value => "Add", :class => "btn-ok"}

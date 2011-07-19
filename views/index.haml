@@ -1,0 +1,17 @@
+%br
+%ul{:class => "projects"}
+  - for row in @paginated_rows
+    %li
+      %a{ :href => "/#{row[:name]}" }= row[:name]
+      %br
+      last download at 
+      %span{ :class => "date"}= row.date 
+      %br
+      total number of downloads 
+      %span{ :class => "date"}= row.downloads_count 
+- if previous_page
+  %a{ :href => "/projects/#{params[:page].to_i - 1}"} &laquo; Previous Page
+- if previous_page && next_page
+  %span || 
+- if next_page
+  %a{ :href => "/projects/#{params[:page].to_i + 1}"} Next Page &raquo;
