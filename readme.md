@@ -48,22 +48,24 @@ Download date.js from https://github.com/vitch/jquery-methods and put it in ./pu
 Use
 ---
 
-How to track download :
+**How to track download :**
 
-- Add sido.js : 
+Add sido.js : 
 
     <script type="text/javascript" src="js/sido.js"></script>
-- Modify Sido_Server in sido.js to match the url of your sido server.
-- Put onclick method on your download link like that : 
+Modify Sido_Server in sido.js to match the url of your sido server.
+
+Put onclick method on your download link like that : 
 
     <a href="./flot-0.7.zip" onclick="javascript:track('project_one','nightly')">test</a>
-How to add an event programmatly :
+**How to add an event programmatly :**
 
-- Add sido.js : 
+Add sido.js : 
 
     <script type="text/javascript" src="js/sido.js"></script>
-- Modify Sido_Server in sido.js to match the url of your sido server.
-- Call add_event('project_one', 'beta test compaign begin')
+Modify Sido_Server in sido.js to match the url of your sido server.
+
+Call add_event('project_one', 'beta test compaign begin')
 
 **One project**
 ![One project](http://f.cl.ly/items/1Y3E2C02152c0r2v2V03/Sido%20-%20Simple%20Download%20Tracker_1310303203863.png)
